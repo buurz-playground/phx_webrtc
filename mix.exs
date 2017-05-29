@@ -16,7 +16,8 @@ defmodule PhxWebrtc.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {PhxWebrtc.Application, [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext]},
+    [mod: {PhxWebrtc.Application, []},
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext],
      extra_applications: [:logger, :runtime_tools]]
   end
 
