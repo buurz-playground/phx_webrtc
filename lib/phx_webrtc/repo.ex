@@ -1,11 +1,11 @@
 defmodule PhxWebrtc.Repo do
-  use Ecto.Repo, otp_app: :phx_webrtc
+  # use Ecto.Repo, otp_app: :phx_webrtc
 
   @doc """
   Dynamically loads the repository url from the
   DATABASE_URL environment variable.
   """
-  def init(_, opts) do
-    {:ok, Keyword.put(opts, :url, System.get_env("DATABASE_URL"))}
-  end
+  # def init(_, opts) do
+  #   {:ok, Keyword.put(opts, :url, System.get_env("DATABASE_URL"))}
+  # end
 end

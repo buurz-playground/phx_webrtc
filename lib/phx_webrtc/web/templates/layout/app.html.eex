@@ -7,20 +7,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello PhxWebrtc!</title>
+    <title>ElixirConf Roulette</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
+    <script>window.userToken = "<%= assigns[:user_token] %>";</script>
+    <script>window.user_id = "<%= assigns[:user_id] %>";</script>
     <div class="container">
-      <header class="header">
-        <nav role="navigation">
-          <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
-          </ul>
-        </nav>
-        <span class="logo"></span>
-      </header>
+      <div class="row">
+        <h1> ElixirConf Roulette </h1>
+      </div>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
@@ -30,6 +27,13 @@
       </main>
 
     </div> <!-- /container -->
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          Made by <a href="http://www.rokkincat.com">RokkinCat</a>
+        </div>
+      </div>
+    </footer>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

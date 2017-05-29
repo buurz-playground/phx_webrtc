@@ -9,9 +9,10 @@ defmodule PhxWebrtc.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(PhxWebrtc.Repo, []),
+      # supervisor(PhxWebrtc.Repo, []),
       # Start the endpoint when the application starts
       supervisor(PhxWebrtc.Web.Endpoint, []),
+      supervisor(PhxWebrtc.Web.Presence, []),
       # Start your own worker by calling: PhxWebrtc.Worker.start_link(arg1, arg2, arg3)
       # worker(PhxWebrtc.Worker, [arg1, arg2, arg3]),
     ]
