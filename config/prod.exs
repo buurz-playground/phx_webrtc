@@ -16,9 +16,10 @@ use Mix.Config
 config :phx_webrtc, PhxWebrtc.Web.Endpoint,
   secret_key_base: "XAGlswFfYg1bQDAA2EmmRXIxtoLpADbW69/MBErXy+e3lMeGHGdnWe76x2a7tVO5",
   http: [port: 3003],
+  check_origin: false,
   url: [host: "127.0.0.1"],
   root: ".",
-  cache_static_manifest: "priv/static/manifest.json",
+  cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
   version: Mix.Project.config[:version]
   # on_init: {PhxWebrtc.Web.Endpoint, :load_from_system_env, []},

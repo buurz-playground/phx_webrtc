@@ -36,6 +36,7 @@ let joinChannel = () => {
 
       getUserMedia({video: true, audio: true}, (err, stream) => {
         if(err) {
+          console.log("getUserMedia Error", err)
           updateStatus("There was a problem with your WebCam/Microphone. Please check your settings and try again.")
           joinChannel();
           return
