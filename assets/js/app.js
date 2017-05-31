@@ -4,13 +4,61 @@ import {Presence} from "phoenix"
 import Peer from "simple-peer"
 import getUserMedia from "getusermedia"
 
-// Now that you are connected, you can join channels with a topic:
 let channel;
+let pc1
+let globalCallChannel
+let callOff = false
+
+let startButton = document.getElementById('startButton')
+let hangupButton = document.getElementById('hangupButton')
+startButton.disabled = false
+hangupButton.disabled = true
+startButton.onclick = () => start()
+hangupButton.onclick = () => hangup(channel)
+
+
+let start = () => {
+  // TODO : when update
+  if (!callOff){
+    joinChannel();
+  }
+}
+
+let hangup = (channel) => {
+  if (pc1) {
+    pc1.signal('close')
+    pc1.destroy()
+  }
+  globalCallChannel.push('bye')
+  hangupButton.disabled = true
+  callOff = true
+}
+
+
+let trace = (text) => {
+  if (text[text.length - 1] === '\n') {
+    text = text.substring(0, text.length - 1);
+  }
+  if (window.performance) {
+    var now = (window.performance.now() / 1000).toFixed(3);
+    console.log(now + ': ' + text);
+  } else {
+    console.log(text);
+  }
+}
+
+// Now that you are connected, you can join channels with a topic:
+
 let updateStatus = (status) => {
   let myVideo = document.getElementById('status')
   myVideo.textContent = status
 }
-updateStatus("Waiting for another User")
+updateStatus("Ожидаем подключения пользователя")
+
+let sessionToken = window.sessionToken
+if(!sessionToken) {
+  updateStatus("Ссылка не верна, пожалуйста попробуйте еще раз.")
+}
 
 let joinChannel = () => {
   if(!Peer.WEBRTC_SUPPORT) {
@@ -18,18 +66,28 @@ let joinChannel = () => {
     return
   }
 
-  channel = socket.channel("users:lobby", {})
+  channel = socket.channel("audio_calls:" + sessionToken, {})
+
   channel.join()
     .receive("ok", resp => { console.log("Joined users successfully", resp) })
     .receive("error", resp => { console.log("Unable to join", resp) })
 
-  channel.on(`chat_start`, payload => {
+  channel.on('bye', payload => {
+    channel.leave()
+    channel = null
+  })
+
+  channel.on('chat_start', payload => {
     if(payload.users.includes(window.user_id)) {
-      updateStatus("Another user found, connecting...")
+      updateStatus("Пользовтель найден, подключение...")
+
       let otherUser = payload.users.filter((id) => window.user_id != id)[0]
       channel.leave()
       channel = null
+
       let callChannel = socket.channel(payload.room)
+      globalCallChannel = callChannel
+
       callChannel.join()
         .receive("ok", resp => { console.log("Joined  callChannel successfully", resp) })
         .receive("error", resp => { console.log("Unable to join", resp) })
@@ -51,6 +109,8 @@ let joinChannel = () => {
 
         var peer = new Peer({ initiator: payload.initiator == window.user_id, trickle: true, stream: stream, config: {iceServers: [{urls:'stun:stun.l.google.com:19302'}, {urls:'stun:stun1.l.google.com:19302'}, {urls:'stun:stun2.l.google.com:19302'}, {urls:'stun:stun3.l.google.com:19302'}, {urls:'stun:stun4.l.google.com:19302'}]}})
 
+        pc1 = peer
+
         peer.on('error', err => {
           try {
             callChannel.leave()
@@ -60,17 +120,18 @@ let joinChannel = () => {
             myVideo.load();
             video.removeAttribute("src");
             video.load();
-            updateStatus("User lost waiting for another")
+            updateStatus("Пользователь отключился или произошел сбой в сети.")
             peer.destroy()
+            startButton.disabled = false
+            hangupButton.disabled = true
             joinChannel()
           } catch(err) {
-            //Ignore
+            console.log('Peer on error: ', err)
           }
         })
 
         peer.on('close', () => {
           try {
-
             callChannel.leave()
             callChannel = null
             peer = null
@@ -78,12 +139,13 @@ let joinChannel = () => {
             myVideo.load();
             video.removeAttribute("src");
             video.load();
-
+            startButton.disabled = false
+            hangupButton.disabled = true
             video.src = null
-            updateStatus("User lost waiting for another")
+            updateStatus("Пользователь отключился или произошел сбой в сети.")
             joinChannel()
           } catch(err) {
-            //Ignore
+            console.log('Peer on close error: ', err)
           }
         })
 
@@ -95,13 +157,13 @@ let joinChannel = () => {
           video = document.getElementById('caller-video')
           video.src = vendorURL ? vendorURL.createObjectURL(callerStream) : callerStream
           video.play()
-          updateStatus("Video Streaming")
+          updateStatus("Audio Streaming")
+          startButton.disabled = true
+          hangupButton.disabled = false
         })
       })
-
-
     }
   })
 }
 
-joinChannel();
+start();

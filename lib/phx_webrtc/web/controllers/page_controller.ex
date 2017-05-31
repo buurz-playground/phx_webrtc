@@ -1,7 +1,7 @@
 defmodule PhxWebrtc.Web.PageController do
   use PhxWebrtc.Web, :controller
 
-  def index(conn, _params) do
-    render conn, "index.html"
+  def index(conn, params) do
+    render conn, "index.html", session_token: params["token"]
   end
 end

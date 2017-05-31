@@ -3,7 +3,7 @@ defmodule PhxWebrtc.Web.UserSocket do
 
   ## Channels
   # channel "room:*", PhxWebrtc.Web.RoomChannel
-  channel "users:lobby", PhxWebrtc.Web.UsersChannel
+  channel "audio_calls:*", PhxWebrtc.Web.UsersChannel
   channel "call:*", PhxWebrtc.Web.CallChannel
 
   ## Transports

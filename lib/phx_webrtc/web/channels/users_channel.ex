@@ -3,9 +3,9 @@ defmodule PhxWebrtc.Web.UsersChannel do
 
   alias PhxWebrtc.Web.Presence
 
-  def join("users:lobby", _params, socket) do
+  def join("audio_calls:" <> session_token, _params, socket) do
     send(self(), :after_join)
-    {:ok, socket}
+    {:ok, assign(socket, :session_token, session_token) }
   end
 
   def handle_info(:after_join, socket) do
