@@ -29,7 +29,6 @@ let hangup = (channel) => {
     pc1.signal('close')
     pc1.destroy()
   }
-  globalCallChannel.push('bye')
   hangupButton.disabled = true
   callOff = true
 }
@@ -79,7 +78,7 @@ let joinChannel = () => {
 
   channel.on('chat_start', payload => {
     if(payload.users.includes(window.user_id)) {
-      updateStatus("Пользовтель найден, подключение...")
+      updateStatus("Пользователь найден, подключение...")
 
       let otherUser = payload.users.filter((id) => window.user_id != id)[0]
       channel.leave()

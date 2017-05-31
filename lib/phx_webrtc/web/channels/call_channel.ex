@@ -26,10 +26,12 @@ defmodule PhxWebrtc.Web.CallChannel do
     case signal == "signal" do
       true ->
         broadcast socket, "signal:#{socket.assigns.user_id}", payload
+        {:noreply, socket}
       false ->
-        IO.inspect %{signal: signal, payload: payload, socket: socket}
-        broadcast socket, "signal:#{socket.assigns.user_id}", %{data: "bye"}
+        # IO.inspect %{signal: signal, payload: payload, socket: socket}
+        # broadcast socket, "signal:#{socket.assigns.user_id}", %{data: "bye"}
+        {:ok, _} = Presence.untrack(socket, socket.assigns.user_id)
+        {:noreply, assign(socket, :call_off, true)}
       end
-    {:noreply, socket}
   end
 end
